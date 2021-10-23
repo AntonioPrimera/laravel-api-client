@@ -3,6 +3,7 @@
 namespace AntonioPrimera\ApiClient\Clients;
 
 use AntonioPrimera\ApiClient\Exceptions\BadApiEndpointConfig;
+use AntonioPrimera\ApiClient\Exceptions\MissingApiClientConfig;
 
 abstract class AbstractApiClient
 {
@@ -13,6 +14,13 @@ abstract class AbstractApiClient
 	{
 		$this->configName = $configName;
 		$this->providerName = $providerName;
+		
+		$this->setupClient();
+	}
+	
+	protected function setupClient()
+	{
+		//override this in your custom client to do any necessary setup
 	}
 	
 	//public function __call(string $name, array $arguments)
@@ -44,6 +52,9 @@ abstract class AbstractApiClient
 	public function getEndpointConfig($endpointName)
 	{
 		$endpointConfig = $this->getConfig("endpoints.{$endpointName}");
+		if (!$endpointConfig)
+			throw new MissingApiClientConfig("Missing endpoint config for endpoint {$endpointName} in provider {$this->providerName}");
+		
 		$rootUrl = $this->getConfig('rootUrl', '');
 		
 		if (is_string($endpointConfig)) {

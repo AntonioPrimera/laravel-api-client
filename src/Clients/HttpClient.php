@@ -10,9 +10,20 @@ use Illuminate\Support\Facades\Http;
 
 class HttpClient extends AbstractApiClient
 {
+	const AUTHENTICATION_TYPE_BASIC = 'basic';
+	const AUTHENTICATION_TYPE_QUERY = 'query';
+	
 	protected $authenticationType;
 	protected $credentials;
 	protected $requestData = [];
+	
+	//--- Client setup ------------------------------------------------------------------------------------------------
+	
+	protected function setupClient()
+	{
+		if (!$this->authenticationType)
+			$this->authenticationType = static::AUTHENTICATION_TYPE_BASIC;
+	}
 	
 	//--- Magic stuff -------------------------------------------------------------------------------------------------
 	
@@ -143,7 +154,7 @@ class HttpClient extends AbstractApiClient
 	 */
 	protected function getAuthenticationTypeFromConfig()
 	{
-		return $this->getConfig('authentication.type', 'basic');
+		return $this->getConfig('authentication.type', static::AUTHENTICATION_TYPE_BASIC);
 	}
 	
 	//--- Protected helpers -------------------------------------------------------------------------------------------
@@ -168,7 +179,7 @@ class HttpClient extends AbstractApiClient
 		$authenticationType = $this->getAuthenticationType();
 		
 		//create a client with basic authentication
-		if ($authenticationType === 'basic') {
+		if ($authenticationType === static::AUTHENTICATION_TYPE_BASIC) {
 			if (!($credentials['username'] ?? null) || !($credentials['password'] ?? null))
 				throw new MissingAuthenticationCredentials('Invalid authentication credentials for http client with basic authentication');
 			
@@ -176,7 +187,7 @@ class HttpClient extends AbstractApiClient
 		}
 		
 		//create a client with authentication parameters sent via query
-		if ($authenticationType === 'query') {
+		if ($authenticationType === static::AUTHENTICATION_TYPE_QUERY) {
 			if (!($credentials && is_array($credentials)))
 				throw new MissingAuthenticationCredentials('Invalid authentication credentials for http client with query authentication');
 			

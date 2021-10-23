@@ -19,43 +19,7 @@ class LaravelSanctumClient extends AbstractApiClient
 {
 	protected $token;
 	
-	//protected function authenticate()
-	//{
-		//$authenticationEndpoint = $this->getConfig('authentication.endpoint');
-		//$credentials = $this->getAuthenticationCredentials();
-		//
-		//$authenticationResponse = call_user_func(
-		//	[Http::class, $authenticationEndpoint['method']],
-		//	$authenticationEndpoint['url'],
-		//	$credentials
-		//);
-		///* @var ClientResponse $authenticationResponse */
-		//
-		//$token = $authenticationResponse->body();
-	//}
-	
-	///**
-	// * Get and validate the authentication credentials
-	// *
-	// * @return array
-	// * @throws MissingAuthenticationCredentials
-	// */
-	//protected function getAuthenticationCredentials()
-	//{
-	//	$credentials = $this->getConfig('authentication.credentials');
-	//
-	//	if (!($credentials['email'] ?? null))
-	//		throw new MissingAuthenticationCredentials("Missing authentication email for provider {$this->providerName}");
-	//
-	//	if (!($credentials['password'] ?? null))
-	//		throw new MissingAuthenticationCredentials("Missing authentication password for provider {$this->providerName}");
-	//
-	//	return [
-	//		'email'    => $credentials['email'],
-	//		'password' => $credentials['password'],
-	//	];
-	//}
-	
+	//--- Magic stuff -------------------------------------------------------------------------------------------------
 	/**
 	 * @throws BadHttpMethod
 	 * @throws MissingAuthenticationCredentials
@@ -68,6 +32,8 @@ class LaravelSanctumClient extends AbstractApiClient
 		return call_user_func([$this->client(), $name], ...$arguments);
 	}
 	
+	//--- Public methods ----------------------------------------------------------------------------------------------
+	
 	/**
 	 * @throws BadApiEndpointConfig
 	 */
@@ -75,6 +41,22 @@ class LaravelSanctumClient extends AbstractApiClient
 	{
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return call_user_func([$this, $endpointConfig['method']], $endpointConfig['url'], $data);
+	}
+	
+	public function withToken(string $token)
+	{
+		return $this->setToken($token);
+	}
+	
+	public function setToken(string $token)
+	{
+		$this->token = $token;
+		return $this;
+	}
+	
+	public function getToken()
+	{
+		return $this->token;
 	}
 	
 	//--- Protected helpers -------------------------------------------------------------------------------------------

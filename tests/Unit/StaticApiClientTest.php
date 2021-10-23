@@ -18,7 +18,7 @@ class StaticApiClientTest extends TestCase
 				'authentication' => ['type' => 'sanctum',]
 			],
 			'myHttpClient' => [
-				'authentication' => ['type' => 'http',]
+				'authentication' => ['type' => 'http:basic',]
 			],
 			'myBadClient' => [
 				'authentication' => ['type' => 'blabla',]
@@ -72,7 +72,7 @@ class StaticApiClientTest extends TestCase
 				],
 			],
 			'myHttpClient' => [
-				'authentication' => ['type' => 'http'],
+				'authentication' => ['type' => 'http:basic'],
 				'endpoints' => [
 					'getTracks' => [
 						'url'    => 'http://localhost:1516/tracks/',

@@ -1,4 +1,4 @@
-# Your new package name
+# Laravel Api Client
 
 ## Installation
 

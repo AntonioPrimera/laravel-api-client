@@ -51,7 +51,7 @@ class HttpClient extends AbstractApiClient
 	 * @param string $endpointName
 	 * @param array  $data
 	 *
-	 * @return false|mixed
+	 * @return \Illuminate\Http\Client\Response
 	 * @throws BadApiEndpointConfig
 	 * @throws BadAuthenticationType
 	 * @throws BadRequestUrlException
@@ -160,6 +160,7 @@ class HttpClient extends AbstractApiClient
 	//--- Protected helpers -------------------------------------------------------------------------------------------
 	
 	/**
+	 * @return \Illuminate\Http\Client\Response
 	 * @throws BadRequestUrlException
 	 * @throws MissingAuthenticationCredentials
 	 * @throws BadAuthenticationType

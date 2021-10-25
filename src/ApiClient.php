@@ -7,6 +7,9 @@ use AntonioPrimera\ApiClient\Clients\LaravelSanctumClient;
 use AntonioPrimera\ApiClient\Exceptions\InvalidApiClientType;
 use AntonioPrimera\ApiClient\Exceptions\MissingApiClientConfig;
 
+/**
+ * @method \Illuminate\Http\Client\Response callEndpoint(string $endpointName, $data = [])
+ */
 class ApiClient
 {
 	protected static $config = 'apiEndpoints';

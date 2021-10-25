@@ -36,6 +36,7 @@ class LaravelSanctumClient extends AbstractApiClient
 	
 	/**
 	 * @throws BadApiEndpointConfig
+	 * @return \Illuminate\Http\Client\Response
 	 */
 	public function callEndpoint(string $endpointName, $data = [])
 	{

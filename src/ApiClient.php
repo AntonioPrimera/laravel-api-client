@@ -9,7 +9,6 @@ use AntonioPrimera\ApiClient\Exceptions\MissingApiClientConfig;
 
 /**
  * @method \Illuminate\Http\Client\Response callEndpoint(string $endpointName, $data = [])
- * @method \Illuminate\Http\Client\PendingRequest timeout(int $seconds);
  */
 class ApiClient
 {

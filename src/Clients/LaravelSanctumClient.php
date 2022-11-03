@@ -2,6 +2,7 @@
 namespace AntonioPrimera\ApiClient\Clients;
 
 use AntonioPrimera\ApiClient\Exceptions\BadApiEndpointConfig;
+use AntonioPrimera\ApiClient\Exceptions\BadAuthenticationType;
 use AntonioPrimera\ApiClient\Exceptions\BadHttpMethod;
 use AntonioPrimera\ApiClient\Exceptions\MissingAuthenticationCredentials;
 use Illuminate\Http\Client\PendingRequest;
@@ -43,6 +44,17 @@ class LaravelSanctumClient extends AbstractApiClient
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return call_user_func([$this, $endpointConfig['method']], $endpointConfig['url'], $data);
 	}
+
+    /**
+     * Used to specify the maximum number of seconds to wait for a response
+     *
+     * @throws BadAuthenticationType
+     * @throws MissingAuthenticationCredentials
+     */
+    public function timeout(int $seconds)
+    {
+        return $this->client()->timeout($seconds);
+    }
 	
 	public function withToken(string $token)
 	{

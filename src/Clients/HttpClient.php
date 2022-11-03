@@ -62,6 +62,17 @@ class HttpClient extends AbstractApiClient
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return $this->sendRequest($endpointConfig['method'], $endpointConfig['url'], $data);
 	}
+
+    /**
+     * Used to specify the maximum number of seconds to wait for a response
+     *
+     * @throws BadAuthenticationType
+     * @throws MissingAuthenticationCredentials
+     */
+    public function timeout(int $seconds)
+    {
+        return $this->client()->timeout($seconds);
+    }
 	
 	//--- Getters and Setters -----------------------------------------------------------------------------------------
 	

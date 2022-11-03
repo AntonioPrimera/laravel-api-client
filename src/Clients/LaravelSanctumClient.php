@@ -43,6 +43,16 @@ class LaravelSanctumClient extends AbstractApiClient
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return call_user_func([$this, $endpointConfig['method']], $endpointConfig['url'], $data);
 	}
+
+    /**
+     * @param int $seconds
+     * @return PendingRequest
+     * @throws MissingAuthenticationCredentials
+     */
+    public function timeout(int $seconds): PendingRequest
+    {
+        return $this->client()->timeout($seconds);
+    }
 	
 	public function withToken(string $token)
 	{

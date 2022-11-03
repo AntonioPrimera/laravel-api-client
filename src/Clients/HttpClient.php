@@ -6,6 +6,7 @@ use AntonioPrimera\ApiClient\Exceptions\BadAuthenticationType;
 use AntonioPrimera\ApiClient\Exceptions\BadHttpMethod;
 use AntonioPrimera\ApiClient\Exceptions\BadRequestUrlException;
 use AntonioPrimera\ApiClient\Exceptions\MissingAuthenticationCredentials;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
 class HttpClient extends AbstractApiClient
@@ -46,7 +47,7 @@ class HttpClient extends AbstractApiClient
 	}
 	
 	//--- Public methods ----------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * @param string $endpointName
 	 * @param array  $data
@@ -62,6 +63,17 @@ class HttpClient extends AbstractApiClient
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return $this->sendRequest($endpointConfig['method'], $endpointConfig['url'], $data);
 	}
+
+    /**
+     * @param int $seconds
+     * @return PendingRequest
+     * @throws BadAuthenticationType
+     * @throws MissingAuthenticationCredentials
+     */
+    public function timeout(int $seconds): PendingRequest
+    {
+        return $this->client()->timeout($seconds);
+    }
 	
 	//--- Getters and Setters -----------------------------------------------------------------------------------------
 	

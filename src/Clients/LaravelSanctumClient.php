@@ -29,7 +29,7 @@ class LaravelSanctumClient extends AbstractApiClient
 	{
 		if (!in_array($name, ['get', 'post', 'put', 'patch', 'delete', 'head']))
 			throw new BadHttpMethod("Bad api call method: {$name}");
-		
+
 		return call_user_func([$this->client(), $name], ...$arguments);
 	}
 	
@@ -44,17 +44,6 @@ class LaravelSanctumClient extends AbstractApiClient
 		$endpointConfig = $this->getEndpointConfig($endpointName);
 		return call_user_func([$this, $endpointConfig['method']], $endpointConfig['url'], $data);
 	}
-
-    /**
-     * Used to specify the maximum number of seconds to wait for a response
-     *
-     * @throws BadAuthenticationType
-     * @throws MissingAuthenticationCredentials
-     */
-    public function timeout(int $seconds)
-    {
-        return $this->client()->timeout($seconds);
-    }
 	
 	public function withToken(string $token)
 	{
@@ -80,7 +69,10 @@ class LaravelSanctumClient extends AbstractApiClient
 	protected function client(): PendingRequest
 	{
 		$token = $this->getSanctumToken();
-		return Http::withToken($token);
+
+		return $this->timeout
+            ? Http::withToken($token)->timeout($this->timeout)
+            : Http::withToken($token);
 	}
 	
 	/**

@@ -42,7 +42,7 @@ class ApiClient
 		if (!static::clientExists($providerName)) {
 			static::addClient($providerName, static::setupClient($providerName));
 		}
-		
+
 		return static::$clients[$providerName];
 	}
 	

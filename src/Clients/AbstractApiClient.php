@@ -9,6 +9,7 @@ abstract class AbstractApiClient
 {
 	protected $providerName;
 	protected $configName;
+    protected $timeout;
 	
 	public function __construct($configName, $providerName)
 	{
@@ -38,45 +39,53 @@ abstract class AbstractApiClient
 	//public abstract function patch(string $url, array $data = []);
 	//public abstract function post(string $url, array $data = []);
 	//public abstract function put(string $url, array $data = []);
-	
+
+    //--- Public methods ----------------------------------------------------------------------------------------------
+    /**
+     * Always returns an array with a valid 'url' and 'method'
+     *
+     * @param $endpointName
+     *
+     * @return array
+     * @throws BadApiEndpointConfig
+     */
+    public function getEndpointConfig($endpointName)
+    {
+        $endpointConfig = $this->getConfig("endpoints.{$endpointName}");
+        if (!$endpointConfig)
+            throw new MissingApiClientConfig("Missing endpoint config for endpoint {$endpointName} in provider {$this->providerName}");
+
+        $rootUrl = $this->getConfig('rootUrl', '');
+
+        if (is_string($endpointConfig)) {
+            return [
+                'url'	 => $this->composeUrl($rootUrl, $endpointConfig),
+                'method' => 'get',
+            ];
+        }
+
+        $endpointUrl = $endpointConfig['url'] ?? null;
+        if (!$endpointUrl)
+            throw new BadApiEndpointConfig("Bad url in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
+
+        $endpointMethod = $endpointConfig['method'] ?? 'get';
+        if (!in_array($endpointMethod, ['get', 'post', 'patch', 'put', 'head', 'delete']))
+            throw new BadApiEndpointConfig("Bad method in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
+
+        return [
+            'url'    => $this->composeUrl($rootUrl, $endpointUrl),
+            'method' => $endpointMethod,
+        ];
+    }
+
+    public function setTimeout(int $seconds): AbstractApiClient
+    {
+        $this->timeout = $seconds;
+
+        return $this;
+    }
+
 	//--- Protected helpers -------------------------------------------------------------------------------------------
-	
-	/**
-	 * Always returns an array with a valid 'url' and 'method'
-	 *
-	 * @param $endpointName
-	 *
-	 * @return array
-	 * @throws BadApiEndpointConfig
-	 */
-	public function getEndpointConfig($endpointName)
-	{
-		$endpointConfig = $this->getConfig("endpoints.{$endpointName}");
-		if (!$endpointConfig)
-			throw new MissingApiClientConfig("Missing endpoint config for endpoint {$endpointName} in provider {$this->providerName}");
-		
-		$rootUrl = $this->getConfig('rootUrl', '');
-		
-		if (is_string($endpointConfig)) {
-			return [
-				'url'	 => $this->composeUrl($rootUrl, $endpointConfig),
-				'method' => 'get',
-			];
-		}
-		
-		$endpointUrl = $endpointConfig['url'] ?? null;
-		if (!$endpointUrl)
-			throw new BadApiEndpointConfig("Bad url in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
-		
-		$endpointMethod = $endpointConfig['method'] ?? 'get';
-		if (!in_array($endpointMethod, ['get', 'post', 'patch', 'put', 'head', 'delete']))
-			throw new BadApiEndpointConfig("Bad method in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
-			
-		return [
-			'url'    => $this->composeUrl($rootUrl, $endpointUrl),
-			'method' => $endpointMethod,
-		];
-	}
 	
 	protected function composeUrl(...$parts)
 	{

@@ -63,17 +63,6 @@ class HttpClient extends AbstractApiClient
 		return $this->sendRequest($endpointConfig['method'], $endpointConfig['url'], $data);
 	}
 
-    /**
-     * Used to specify the maximum number of seconds to wait for a response
-     *
-     * @throws BadAuthenticationType
-     * @throws MissingAuthenticationCredentials
-     */
-    public function timeout(int $seconds)
-    {
-        return $this->client()->timeout($seconds);
-    }
-	
 	//--- Getters and Setters -----------------------------------------------------------------------------------------
 	
 	/**
@@ -180,7 +169,7 @@ class HttpClient extends AbstractApiClient
 	{
 		if (!$url)
 			throw new BadRequestUrlException('No Url for Http client request');
-		
+
 		return call_user_func([$this->client(), $method], $url, array_merge($this->getRequestData(), $data));
 	}
 	
@@ -195,7 +184,9 @@ class HttpClient extends AbstractApiClient
 			if (!($credentials['username'] ?? null) || !($credentials['password'] ?? null))
 				throw new MissingAuthenticationCredentials('Invalid authentication credentials for http client with basic authentication');
 			
-			return Http::withBasicAuth($credentials['username'], $credentials['password']);
+			return $this->timeout
+                ? Http::withBasicAuth($credentials['username'], $credentials['password'])->timeout($this->timeout)
+                : Http::withBasicAuth($credentials['username'], $credentials['password']);
 		}
 		
 		//create a client with authentication parameters sent via query
@@ -205,7 +196,9 @@ class HttpClient extends AbstractApiClient
 			
 			$this->withData($credentials);
 			
-			return Http::class;
+			return $this->timeout
+                ? Http::timeout($this->timeout)
+                : Http::class;
 		}
 		
 		throw new BadAuthenticationType("Invalid authentication type {$authenticationType} for Http Client.");

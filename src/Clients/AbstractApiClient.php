@@ -69,7 +69,7 @@ abstract class AbstractApiClient
             throw new BadApiEndpointConfig("Bad url in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
 
         $endpointMethod = $endpointConfig['method'] ?? 'get';
-        if (!in_array($endpointMethod, ['get', 'post', 'patch', 'put', 'head', 'delete']))
+        if (!in_array(strtolower($endpointMethod), ['get', 'post', 'patch', 'put', 'head', 'delete']))
             throw new BadApiEndpointConfig("Bad method in api endpoint config for provider {$this->providerName}, endpoint {$endpointName}");
 
         return [
